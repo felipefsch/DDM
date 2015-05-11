@@ -50,18 +50,7 @@ public class MapReduceProgram {
     }
  }
  
- public static void main(String[] args) throws Exception {	 
-	File s = new File("files/output/_SUCCESS");
-    s.delete();
-    
-    File p = new File("files/output/part-r-00000");
-    p.delete();
-    
-    Thread.sleep(1000);
-    
-    File f = new File("files/output");
-    f.delete();
-	 
+ public static void main(String[] args) throws Exception {		 
     Configuration conf = new Configuration();
         
     Job job = new Job(conf, "Assignment2");
