@@ -18,7 +18,11 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class Assignment3 {
-
+	
+	public static String ordersTable = "files/ordersInput";
+	public static String customersTable = "files/customersInput"; 
+	public static String outputResult = "files/a3output";
+	
 	/**
 	 * InnerJoin from:
 	 * 
@@ -36,7 +40,7 @@ public class Assignment3 {
  
 	 public static class Map extends Mapper<LongWritable, Text, Text, Text> {
 		        
-		 	private static HashMap<String, String> DepartmentMap = new HashMap<String, String>();
+		 	private static HashMap<String, String> customerMap = new HashMap<String, String>();
 			private BufferedReader brReader;
 			private String customerInfo = "";
 			private Text txtMapOutputKey = new Text("");
@@ -50,7 +54,7 @@ public class Assignment3 {
 				//Path[] cacheFilesLocal = DistributedCache.getLocalCacheFiles(context.getConfiguration());
 
 				// context.getConfiguration() was returning NULL. Path HardCoded to solve it
-				hashCustomers(new Path("files/customersInput"), context);		 
+				hashCustomers(new Path(customersTable), context);		 
 			}
 		 
 			// Create hash of customers to join with orders
@@ -74,7 +78,7 @@ public class Assignment3 {
 						for (int i = 0; i < 2; i++)
 							customerInfo += " " + customerFields[i]; 
 
-						DepartmentMap.put(customerId, customerInfo);
+						customerMap.put(customerId, customerInfo);
 					}
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
@@ -104,7 +108,7 @@ public class Assignment3 {
 					orderAtt += " " + orderAttributes[1];
 					
 					try {
-						customerInfo = DepartmentMap.get(orderCustomerId);
+						customerInfo = customerMap.get(orderCustomerId);
 					} finally {
 						customerInfo = ((customerInfo.equals(null) || customerInfo.equals("")) ? "NOT-FOUND" : customerInfo);
 					}
@@ -119,11 +123,7 @@ public class Assignment3 {
 		 }
 		 
 		@SuppressWarnings("deprecation")
-		public static void main(String[] args) throws Exception {		 
-			String ordersTable = "files/ordersInput";
-			String customersTable = "files/customersInput"; 
-			String outputResult = "files/a3output";
-			
+		public static void main(String[] args) throws Exception {			
 			Configuration conf = new Configuration();
 			 	
 		 	Job job = new Job(conf, "Assignment3 - MapSideJoin");
